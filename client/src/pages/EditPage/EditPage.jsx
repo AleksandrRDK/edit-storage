@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import { fetchEditById } from '../../api/editsApi';
+import {
+    removeFavorite,
+    addFavorite,
+    checkIsFavorite,
+} from '../../api/favoritesApi';
 import './EditPage.sass';
 
 export default function EditPage() {
@@ -10,6 +15,10 @@ export default function EditPage() {
     const [edit, setEdit] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(null);
+    const [loadingFav, setLoadingFav] = useState(false);
+
+    const token = localStorage.getItem('token');
 
     // Форматируем дату в удобный вид
     const formatDate = (dateStr) => {
@@ -26,16 +35,47 @@ export default function EditPage() {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        fetchEditById(id)
-            .then((data) => {
+
+        async function loadEditAndCheckFavorite() {
+            try {
+                const data = await fetchEditById(id);
                 setEdit(data);
                 setLoading(false);
-            })
-            .catch((err) => {
+
+                if (token) {
+                    const favStatus = await checkIsFavorite(data._id, token);
+                    setIsFavorite(favStatus);
+                }
+            } catch (err) {
                 setError(err.message);
                 setLoading(false);
-            });
-    }, [id]);
+            }
+        }
+
+        loadEditAndCheckFavorite();
+    }, [id, token]);
+
+    const toggleFavorite = async () => {
+        if (!token) {
+            setError('Пожалуйста, войдите, чтобы использовать избранное.');
+            return;
+        }
+        setLoadingFav(true);
+        setError(null);
+        try {
+            if (isFavorite) {
+                await removeFavorite(edit._id, token);
+                setIsFavorite(false);
+            } else {
+                await addFavorite(edit._id, token);
+                setIsFavorite(true);
+            }
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setLoadingFav(false);
+        }
+    };
 
     return (
         <main className="edit-detail-page">
@@ -73,7 +113,13 @@ export default function EditPage() {
                                   ))
                                 : '— нет тегов —'}
                         </p>
-
+                        <button
+                            className="fav-button"
+                            onClick={toggleFavorite}
+                            disabled={loadingFav}
+                        >
+                            {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
+                        </button>
                         <p className="edit-meta">
                             Создан:{' '}
                             <time dateTime={edit.createdAt}>

@@ -6,8 +6,6 @@ import Profile from '../../pages/Profile/Profile';
 import AddEditPage from '../../pages/AddEditPage/AddEditPage';
 import EditPage from '../../pages/EditPage/EditPage';
 
-import './App.sass';
-
 function App() {
     return (
         <Router>

@@ -6,11 +6,12 @@ export async function fetchEdits() {
     return res.json();
 }
 
-export async function fetchRandomEdit() {
-    const res = await fetch(`${API_URL}/random`);
-    if (!res.ok) throw new Error('Не удалось получить случайный эдит');
-    return res.json();
-}
+// пока что не используется
+// export async function fetchRandomEdit() {
+//     const res = await fetch(`${API_URL}/random`);
+//     if (!res.ok) throw new Error('Не удалось получить случайный эдит');
+//     return res.json();
+// }
 
 export async function fetchRandomEdits() {
     const res = await fetch(`${API_URL}/random-many`);

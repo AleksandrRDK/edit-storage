@@ -10,6 +10,7 @@ import './Profile.sass';
 
 export default function Profile() {
     const [user, setUser] = useState(null);
+    const [favorites, setFavorites] = useState([]);
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
@@ -31,11 +32,40 @@ export default function Profile() {
             });
     }, []);
 
+    useEffect(() => {
+        if (!user || !user.favorites?.length) return;
+
+        const fetchFavorites = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(
+                    'http://localhost:5000/api/users/favorites',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (!res.ok) {
+                    throw new Error('Не удалось загрузить избранные эдиты');
+                }
+
+                const data = await res.json();
+                setFavorites(data.edits);
+            } catch (err) {
+                console.error(err.message);
+            }
+        };
+
+        fetchFavorites();
+    }, [user]);
+
     function handleChangePassword() {
         setShowChangeModal(true);
     }
 
-    function handlePasswordChange(oldPassword, newPassword) {
+    function handlePasswordChange({ oldPassword, newPassword }) {
         changePassword(oldPassword, newPassword)
             .then(() => {
                 setSuccessMsg('Пароль успешно изменён');
@@ -48,10 +78,20 @@ export default function Profile() {
             });
     }
 
+    function handleLogout() {
+        localStorage.removeItem('token');
+        setUser(null);
+        setFavorites([]);
+        setError(null);
+        setSuccessMsg(null);
+        setShowChangeModal(false);
+        window.location.href = '/profile';
+    }
+
     return (
-        <main className="profile-page-wrapper">
+        <main className="profile-page">
             <Sidebar />
-            <div className="profile-page">
+            <div className="profile-page-wrapper">
                 {!user ? (
                     <LoginForm onLogin={setUser} />
                 ) : (
@@ -65,6 +105,7 @@ export default function Profile() {
                             <UserInfo
                                 user={user}
                                 onChangePassword={handleChangePassword}
+                                onLogout={handleLogout}
                             />
                         </div>
 
@@ -76,7 +117,7 @@ export default function Profile() {
                         )}
 
                         <hr className="section-divider" />
-                        <FavoritesSection favorites={user.favorites} />
+                        <FavoritesSection favorites={favorites} />
                     </>
                 )}
             </div>

@@ -22,7 +22,9 @@ export default function FavoritesSection({ favorites }) {
     const sortedFavorites = useMemo(() => {
         const arr = [...favorites];
         if (sortBy === 'date') {
-            return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+            return arr.sort(
+                (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+            );
         }
         if (sortBy === 'title') {
             return arr.sort((a, b) => a.title.localeCompare(b.title));
@@ -33,14 +35,16 @@ export default function FavoritesSection({ favorites }) {
         return arr;
     }, [favorites, sortBy]);
 
-    const getEmbedUrl = (url) => {
-        if (!url.includes('embed')) {
-            const videoIdMatch = url.match(/v=([^&]+)/);
-            if (videoIdMatch) {
-                return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
-            }
-        }
-        return url;
+    const getEmbedUrl = (videoId) => `https://www.youtube.com/embed/${videoId}`;
+    const getThumbnailUrl = (videoId) =>
+        `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+    const formatDate = (isoDate) => {
+        return new Date(isoDate).toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
     };
 
     return (
@@ -74,26 +78,38 @@ export default function FavoritesSection({ favorites }) {
             <div className="favorites-list">
                 {sortedFavorites.map((edit) => (
                     <div
-                        key={edit.id}
+                        key={edit._id}
                         className="edit-card"
                         onClick={() => setSelectedVideo(edit.video)}
                     >
-                        <img src={edit.preview} alt={edit.title} />
+                        <img
+                            src={getThumbnailUrl(edit.video)}
+                            alt={edit.title}
+                        />
                         <div className="info">
                             <h4>{edit.title}</h4>
                             <p>{edit.author}</p>
-                            <span>{edit.date}</span>
+                            <span>{formatDate(edit.createdAt)}</span>
                         </div>
                     </div>
                 ))}
             </div>
 
             {selectedVideo && (
-                <div className="modal" onClick={() => setSelectedVideo(null)}>
+                <div
+                    className="modal-edit"
+                    onClick={() => setSelectedVideo(null)}
+                >
                     <div
                         className="modal-content"
                         onClick={(e) => e.stopPropagation()}
                     >
+                        <button
+                            className="close-btn"
+                            onClick={() => setSelectedVideo(null)}
+                        >
+                            ✕
+                        </button>
                         <iframe
                             width="560"
                             height="315"

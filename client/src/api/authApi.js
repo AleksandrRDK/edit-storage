@@ -38,7 +38,7 @@ export async function getMe() {
 export async function changePassword(oldPassword, newPassword) {
     const token = localStorage.getItem('token');
 
-    const res = await fetch('/api/auth/change-password', {
+    const res = await fetch(`${API_URL}/change-password`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -9,7 +9,11 @@ export default function EditCard({ edit }) {
     };
 
     return (
-        <a href={`/edit/${edit._id}`} className="edit-card" title={edit.title}>
+        <a
+            href={`/edit/${edit._id}`}
+            className="all-edit-card"
+            title={edit.title}
+        >
             <img src={previewUrl} alt={`Превью ${edit.title}`} />
             <div className="card-info">
                 <h5 className="edit-title">{edit.title}</h5>

@@ -3,7 +3,7 @@ import './EditsList.sass';
 
 export default function EditsList({ edits }) {
     return (
-        <div className="edits-list">
+        <div className="all-edits-list">
             {edits.length === 0 ? (
                 <p className="no-results">Нет эдитов по вашему запросу.</p>
             ) : (

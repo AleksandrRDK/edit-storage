@@ -1,6 +1,6 @@
 import './UserInfo.sass';
 
-export default function UserInfo({ user, onChangePassword }) {
+export default function UserInfo({ user, onChangePassword, onLogout }) {
     const formattedDate = new Date(user.createdAt).toLocaleDateString('ru-RU');
 
     return (
@@ -18,14 +18,17 @@ export default function UserInfo({ user, onChangePassword }) {
                 <span>Дата регистрации:</span>
                 <span>{formattedDate}</span>
             </div>
-            {onChangePassword && (
+            <div className="user-info__btn__wrapper">
                 <button
                     className="change-password-btn"
                     onClick={onChangePassword}
                 >
                     Изменить пароль
                 </button>
-            )}
+                <button className="logout-button" onClick={onLogout}>
+                    Выйти
+                </button>
+            </div>
             <button
                 className="add-edit-button"
                 onClick={() => (window.location.href = '/add-edit')}

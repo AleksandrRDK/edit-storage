@@ -28,8 +28,8 @@ export default function LoginForm({ onLogin }) {
     }
 
     return (
-        <div className="login-form-wrapper">
-            <div className="login-form">
+        <div className="login-form">
+            <div className="login-form-wrapper">
                 <div className="toggle">
                     <button
                         className={mode === 'login' ? 'active' : ''}

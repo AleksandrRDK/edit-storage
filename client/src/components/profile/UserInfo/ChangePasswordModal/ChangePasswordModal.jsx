@@ -14,7 +14,15 @@ export default function ChangePasswordModal({ onClose, onSubmit }) {
             return;
         }
         setError('');
-        onSubmit({ currentPassword, newPassword });
+        onSubmit({ oldPassword: currentPassword, newPassword });
+    }
+
+    function handleClose() {
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setError('');
+        onClose();
     }
 
     return (
@@ -46,7 +54,7 @@ export default function ChangePasswordModal({ onClose, onSubmit }) {
                     {error && <p className="error">{error}</p>}
                     <div className="modal-buttons">
                         <button type="submit">Сменить</button>
-                        <button type="button" onClick={onClose}>
+                        <button type="button" onClick={handleClose}>
                             Отмена
                         </button>
                     </div>

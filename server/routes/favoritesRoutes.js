@@ -1,5 +1,7 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
+import Edit from '../models/Edit.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -58,11 +60,25 @@ router.get('/', authMiddleware, async (req, res) => {
         const skip = (page - 1) * limit;
 
         const user = await User.findById(userId);
-        if (!user)
+        if (!user) {
             return res.status(404).json({ message: 'Пользователь не найден' });
+        }
 
         const totalFavorites = user.favorites.length;
-        const pagedFavoritesIds = user.favorites.slice(skip, skip + limit);
+
+        // Проверяем, что все айди валидные
+        const pagedFavoritesIds = user.favorites
+            .slice(skip, skip + limit)
+            .filter((id) => mongoose.Types.ObjectId.isValid(id));
+
+        if (pagedFavoritesIds.length === 0) {
+            return res.json({
+                total: totalFavorites,
+                page,
+                limit,
+                edits: [],
+            });
+        }
 
         const edits = await Edit.find({ _id: { $in: pagedFavoritesIds } });
 
@@ -73,6 +89,7 @@ router.get('/', authMiddleware, async (req, res) => {
             edits,
         });
     } catch (error) {
+        console.error('Ошибка в GET /favorites:', error);
         res.status(500).json({ message: 'Ошибка сервера' });
     }
 });

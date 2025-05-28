@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/change-password', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { oldPassword, newPassword } = req.body;
 
         const user = await User.findById(userId);

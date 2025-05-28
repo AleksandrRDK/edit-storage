@@ -13,14 +13,15 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/random', async (req, res) => {
-    try {
-        const randomEdit = await Edit.aggregate([{ $sample: { size: 1 } }]);
-        res.json(randomEdit[0]);
-    } catch (err) {
-        res.status(500).json({ message: 'Ошибка при получении эдита' });
-    }
-});
+// пока что не используется
+// router.get('/random', async (req, res) => {
+//     try {
+//         const randomEdit = await Edit.aggregate([{ $sample: { size: 1 } }]);
+//         res.json(randomEdit[0]);
+//     } catch (err) {
+//         res.status(500).json({ message: 'Ошибка при получении эдита' });
+//     }
+// });
 
 router.get('/random-many', async (req, res) => {
     try {

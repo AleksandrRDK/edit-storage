@@ -27,6 +27,7 @@
     border-radius: 8px
     font-size: 1rem
     font-weight: 500
+    gap: 30px
 
     span:first-child
       color: var(--text-secondary)
@@ -34,18 +35,35 @@
     span:last-child
       color: var(--text)
 
-  .change-password-btn
-    align-self: center
-    margin-top: 20px
-    padding: 10px 24px
-    font-weight: bold
-    font-size: 1rem
-    background: var(--accent-gradient)
-    color: #000
+  &__btn__wrapper
+    display: block
+    .change-password-btn, .logout-button
+      align-self: center
+      margin-top: 20px
+      padding: 10px 24px
+      font-weight: bold
+      font-size: 1rem
+      background: var(--accent-gradient)
+      color: var(--text)
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.7)
+      border: none
+      border-radius: 8px
+      cursor: pointer
+      transition: transform 0.2s ease
+      width: 100%
+
+      &:hover
+        transform: scale(1.05)
+
+  .add-edit-button
+    padding: 0.5rem 1rem
+    background-color: #4caf50
+    color: white
     border: none
     border-radius: 8px
     cursor: pointer
-    transition: transform 0.2s ease
-
+    font-weight: bold
+    transition: 0.3s
     &:hover
-      transform: scale(1.05)
+      background-color: #43a047
+

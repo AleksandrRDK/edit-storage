@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { checkIsFavorite } from '../../api/favoritesApi';
 import './EditModal.sass';
 
 export default function EditModal({
@@ -8,16 +9,39 @@ export default function EditModal({
     onClose,
     onToggleFavorite,
 }) {
-    const [isFavorite, setIsFavorite] = useState(
-        edit.favorites?.includes(currentUser?.id) || false
-    );
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [loadingFavorite, setLoadingFavorite] = useState(true);
+
+    useEffect(() => {
+        const fetchFavoriteStatus = async () => {
+            if (!currentUser) {
+                setLoadingFavorite(false);
+                return;
+            }
+            try {
+                const token = localStorage.getItem('token');
+                const isFav = await checkIsFavorite(edit._id, token);
+                setIsFavorite(isFav);
+            } catch (err) {
+                console.error('Ошибка при проверке избранного:', err);
+            } finally {
+                setLoadingFavorite(false);
+            }
+        };
+
+        fetchFavoriteStatus();
+    }, [edit._id, currentUser]);
 
     const handleFavoriteClick = () => {
-        setIsFavorite(!isFavorite);
-        onToggleFavorite(edit._id, !isFavorite);
+        if (!currentUser) {
+            alert('Авторизуйтесь, чтобы добавлять в избранное');
+            return;
+        }
+        const newState = !isFavorite;
+        setIsFavorite(newState);
+        onToggleFavorite(edit._id, newState);
     };
 
-    // Форматируем дату
     const formatDate = (dateStr) => {
         const d = new Date(dateStr);
         return d.toLocaleDateString('ru-RU', {
@@ -45,7 +69,7 @@ export default function EditModal({
                         title={edit.title}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                    ></iframe>
+                    />
                 </div>
 
                 <p className="edit-date">
@@ -61,10 +85,19 @@ export default function EditModal({
                 </div>
 
                 <button
-                    className={`favorite-btn ${isFavorite ? 'favorited' : ''}`}
+                    className={`favorite-btn ${
+                        !currentUser
+                            ? 'disabled'
+                            : isFavorite
+                            ? 'favorited'
+                            : ''
+                    }`}
                     onClick={handleFavoriteClick}
+                    disabled={!currentUser || loadingFavorite}
                 >
-                    {isFavorite
+                    {!currentUser
+                        ? 'Войдите, чтобы добавить'
+                        : isFavorite
                         ? 'Убрать из избранного'
                         : 'Добавить в избранное'}
                 </button>

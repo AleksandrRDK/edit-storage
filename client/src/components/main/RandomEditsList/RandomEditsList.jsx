@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchRandomEdits } from '../../../api/editsApi';
+import { addFavorite, removeFavorite } from '../../../api/favoritesApi';
 import EditModal from '../../../components/EditModal/EditModal';
 import './RandomEditsList.sass';
 
@@ -17,12 +18,47 @@ export default function RandomEditsList({ currentUser }) {
         setSelectedEdit(null);
     };
 
-    const handleToggleFavorite = (editId, add) => {
-        // Здесь должна быть логика добавления/удаления из избранного с запросом на API
-        console.log(
-            editId,
-            add ? 'Добавить в избранное' : 'Удалить из избранного'
-        );
+    const handleToggleFavorite = async (editId, add) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token || !currentUser) return;
+
+            if (add) {
+                await addFavorite(editId, token);
+            } else {
+                await removeFavorite(editId, token);
+            }
+
+            setEdits((prev) =>
+                prev.map((edit) =>
+                    edit._id === editId
+                        ? {
+                              ...edit,
+                              favorites: add
+                                  ? [...edit.favorites, currentUser.id]
+                                  : edit.favorites.filter(
+                                        (id) => id !== currentUser.id
+                                    ),
+                          }
+                        : edit
+                )
+            );
+
+            setSelectedEdit((prev) =>
+                prev && prev._id === editId
+                    ? {
+                          ...prev,
+                          favorites: add
+                              ? [...prev.favorites, currentUser.id]
+                              : prev.favorites.filter(
+                                    (id) => id !== currentUser.id
+                                ),
+                      }
+                    : prev
+            );
+        } catch (err) {
+            console.error('Ошибка избранного:', err.message);
+        }
     };
 
     return (

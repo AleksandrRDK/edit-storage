@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchRandomEdit } from '../../../api/editsApi';
+import { fetchEditOfTheDay } from '../../../api/editOfTheDay';
 import {
     addFavorite,
     removeFavorite,
@@ -9,7 +9,7 @@ import './EditOfTheDay.sass';
 
 export default function EditOfTheDay() {
     const [edit, setEdit] = useState(null);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
     const [error, setError] = useState(null);
 
@@ -18,7 +18,7 @@ export default function EditOfTheDay() {
     useEffect(() => {
         async function loadData() {
             try {
-                const edit = await fetchRandomEdit();
+                const edit = await fetchEditOfTheDay();
                 setEdit(edit);
 
                 if (token) {
@@ -83,13 +83,15 @@ export default function EditOfTheDay() {
                         </span>
                     </div>
 
-                    <button
-                        className="fav-button"
-                        onClick={toggleFavorite}
-                        disabled={loadingFav}
-                    >
-                        {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
-                    </button>
+                    {isFavorite !== null && (
+                        <button
+                            className="fav-button"
+                            onClick={toggleFavorite}
+                            disabled={loadingFav}
+                        >
+                            {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
+                        </button>
+                    )}
 
                     {error && <div className="error-message">{error}</div>}
                 </div>

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import editRoutes from './routes/editRoutes.js';
 import authRoutes from './routes/auth.js';
 import favoritesRoutes from './routes/favoritesRoutes.js';
+import getEditOfTheDay from './routes/editOfTheDay.js';
 
 dotenv.config();
 
@@ -31,3 +32,4 @@ app.get('/', (req, res) => {
 app.use('/api/edits', editRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users/favorites', favoritesRoutes);
+app.use('/api/edit-of-the-day', getEditOfTheDay);
