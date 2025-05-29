@@ -50,7 +50,6 @@ export default function EditModal({
             day: 'numeric',
         });
     };
-
     return (
         <div className="edit-modal-backdrop" onClick={onClose}>
             <div className="edit-modal" onClick={(e) => e.stopPropagation()}>

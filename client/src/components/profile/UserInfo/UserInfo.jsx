@@ -1,7 +1,9 @@
 import './UserInfo.sass';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserInfo({ user, onChangePassword, onLogout }) {
     const formattedDate = new Date(user.createdAt).toLocaleDateString('ru-RU');
+    const navigate = useNavigate();
 
     return (
         <div className="user-info">
@@ -31,7 +33,7 @@ export default function UserInfo({ user, onChangePassword, onLogout }) {
             </div>
             <button
                 className="add-edit-button"
-                onClick={() => (window.location.href = '/add-edit')}
+                onClick={() => navigate('/add-edit')}
             >
                 + Добавить эдит
             </button>

@@ -4,6 +4,7 @@ import LoginForm from '../../components/profile/LoginForm/LoginForm';
 import UserInfo from '../../components/profile/UserInfo/UserInfo';
 import FavoritesSection from '../../components/profile/FavoritesSection/FavoritesSection';
 import ChangePasswordModal from '../../components/profile/UserInfo/ChangePasswordModal/ChangePasswordModal';
+import Loading from '../../components/Loading/Loading';
 import { changePassword, getMe } from '../../api/authApi';
 
 import './Profile.sass';
@@ -14,10 +15,14 @@ export default function Profile() {
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token) return;
+        if (!token) {
+            setLoading(false);
+            return;
+        }
 
         getMe()
             .then((data) => {
@@ -29,11 +34,19 @@ export default function Profile() {
                     localStorage.removeItem('token');
                 }
                 setUser(null);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
     useEffect(() => {
-        if (!user || !user.favorites?.length) return;
+        if (!user || !user.favorites?.length) {
+            setFavorites([]);
+            return;
+        }
+
+        setLoading(true);
 
         const fetchFavorites = async () => {
             try {
@@ -55,6 +68,9 @@ export default function Profile() {
                 setFavorites(data.edits);
             } catch (err) {
                 console.error(err.message);
+                setFavorites([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -88,6 +104,17 @@ export default function Profile() {
         window.location.href = '/profile';
     }
 
+    if (loading) {
+        return (
+            <main className="profile-page">
+                <Sidebar />
+                <div className="profile-page-wrapper">
+                    <Loading />
+                </div>
+            </main>
+        );
+    }
+
     return (
         <main className="profile-page">
             <Sidebar />
@@ -117,7 +144,10 @@ export default function Profile() {
                         )}
 
                         <hr className="section-divider" />
-                        <FavoritesSection favorites={favorites} />
+                        <FavoritesSection
+                            favorites={favorites}
+                            currentUser={user}
+                        />
                     </>
                 )}
             </div>

@@ -36,3 +36,41 @@
         background-color: var(--accent-secondary)
         border-color: var(--accent-secondary)
         color: var(--bg)
+  .filter-icon-btn
+    background: none
+    border: none
+    color: var(--accent-secondary)
+    font-size: 1.3rem
+    cursor: pointer
+    padding: 0.2rem 0.5rem
+
+  .filter-modal
+    position: fixed
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+    background: rgba(0, 0, 0, 0.6)
+    display: flex
+    align-items: center
+    justify-content: center
+    z-index: 999
+
+  .filter-modal-content
+    position: relative
+    background: var(--card-bg)
+    color: var(--text)
+    padding: 1.5rem
+    border-radius: 12px
+    max-width: 500px
+    width: 90%
+
+  .close-btn
+    background: none
+    border: none
+    color: var(--text-secondary)
+    font-size: 1.5rem
+    position: absolute
+    top: 1rem
+    right: 1rem
+    cursor: pointer

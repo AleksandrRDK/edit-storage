@@ -7,6 +7,7 @@ import {
     addFavorite,
     checkIsFavorite,
 } from '../../api/favoritesApi';
+import Loading from '../../components/Loading/Loading';
 import './EditPage.sass';
 
 export default function EditPage() {
@@ -78,66 +79,71 @@ export default function EditPage() {
     };
 
     return (
-        <main className="edit-detail-page">
-            <Sidebar />
-            <div className="edit-detail-content">
-                <button className="back-button" onClick={() => navigate(-1)}>
-                    ← Назад
-                </button>
+        <>
+            {loading && <Loading />}
+            <main className="edit-detail-page">
+                <Sidebar />
+                <div className="edit-detail-content">
+                    <button
+                        className="back-button"
+                        onClick={() => navigate(-1)}
+                    >
+                        ← Назад
+                    </button>
+                    {error && <p className="error">{error}</p>}
+                    {edit && (
+                        <article className="edit-card">
+                            <h1 className="edit-title">{edit.title}</h1>
+                            <p className="edit-author">
+                                Автор: <b>{edit.author}</b>
+                            </p>
 
-                {loading && <p>Загрузка...</p>}
-                {error && <p className="error">{error}</p>}
+                            <div className="video-wrapper">
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${edit.video}`}
+                                    allowFullScreen
+                                    title={`Видео к эдиту: ${edit.title}`}
+                                />
+                            </div>
 
-                {edit && (
-                    <article className="edit-card">
-                        <h1 className="edit-title">{edit.title}</h1>
-                        <p className="edit-author">
-                            Автор: <b>{edit.author}</b>
-                        </p>
-
-                        <div className="video-wrapper">
-                            <iframe
-                                src={`https://www.youtube.com/embed/${edit.video}`}
-                                allowFullScreen
-                                title={`Видео к эдиту: ${edit.title}`}
-                            />
-                        </div>
-
-                        <p className="edit-tags">
-                            Теги:{' '}
-                            {edit.tags && edit.tags.length > 0
-                                ? edit.tags.map((tag, i) => (
-                                      <span key={i} className="tag">
-                                          #{tag}
-                                      </span>
-                                  ))
-                                : '— нет тегов —'}
-                        </p>
-                        <button
-                            className="fav-button"
-                            onClick={toggleFavorite}
-                            disabled={loadingFav}
-                        >
-                            {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
-                        </button>
-                        <p className="edit-meta">
-                            Создан:{' '}
-                            <time dateTime={edit.createdAt}>
-                                {formatDate(edit.createdAt)}
-                            </time>
-                        </p>
-                        <p className="edit-meta">
-                            Обновлён:{' '}
-                            <time dateTime={edit.updatedAt}>
-                                {formatDate(edit.updatedAt)}
-                            </time>
-                        </p>
-                        <p className="edit-meta">
-                            ID эдита: <code>{edit._id}</code>
-                        </p>
-                    </article>
-                )}
-            </div>
-        </main>
+                            <p className="edit-tags">
+                                Теги:{' '}
+                                {edit.tags && edit.tags.length > 0
+                                    ? edit.tags.map((tag, i) => (
+                                          <span key={i} className="tag">
+                                              #{tag}
+                                          </span>
+                                      ))
+                                    : '— нет тегов —'}
+                            </p>
+                            <button
+                                className="fav-button"
+                                onClick={toggleFavorite}
+                                disabled={loadingFav}
+                            >
+                                {isFavorite
+                                    ? '❤️ В избранном'
+                                    : '♡ В избранное'}
+                            </button>
+                            <p className="edit-meta">
+                                Создан:{' '}
+                                <time dateTime={edit.createdAt}>
+                                    {formatDate(edit.createdAt)}
+                                </time>
+                            </p>
+                            <p className="edit-meta">
+                                Обновлён:{' '}
+                                <time dateTime={edit.updatedAt}>
+                                    {formatDate(edit.updatedAt)}
+                                </time>
+                            </p>
+                            <p className="edit-meta">
+                                ID эдита: <code>{edit._id}</code>
+                            </p>
+                        </article>
+                    )}
+                </div>
+            </main>
+        </>
     );
 }

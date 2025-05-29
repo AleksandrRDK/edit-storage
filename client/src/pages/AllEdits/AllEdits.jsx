@@ -4,6 +4,7 @@ import SearchBar from '../../components/allEdits/SearchBar/SearchBar';
 import Filters from '../../components/allEdits/Filters/Filters';
 import EditsList from '../../components/allEdits/EditsList/EditsList';
 import { fetchPaginatedEdits } from '../../api/editsApi';
+import Loading from '../../components/Loading/Loading';
 
 import './AllEdits.sass';
 
@@ -14,16 +15,21 @@ export default function AllEdits() {
     const [tags, setTags] = useState([]);
     const [skip, setSkip] = useState(0);
     const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(true);
     const limit = 10;
 
     useEffect(() => {
-        loadMoreEdits();
+        loadMoreEdits(true);
     }, []);
 
-    function loadMoreEdits() {
-        fetchPaginatedEdits(skip, limit)
+    function loadMoreEdits(initial = false) {
+        if (initial) setLoading(true);
+
+        fetchPaginatedEdits(initial ? 0 : skip, limit)
             .then(({ edits: newEdits, total }) => {
-                const updatedEdits = [...edits, ...newEdits];
+                const updatedEdits = initial
+                    ? newEdits
+                    : [...edits, ...newEdits];
                 setEdits(updatedEdits);
                 setTotal(total);
 
@@ -33,16 +39,16 @@ export default function AllEdits() {
                     return acc;
                 }, {});
                 const tagList = Object.entries(tagCounts).map(
-                    ([tag, count]) => ({
-                        tag,
-                        count,
-                    })
+                    ([tag, count]) => ({ tag, count })
                 );
                 setTags(tagList);
 
-                setSkip((prev) => prev + limit);
+                setSkip((prev) => (initial ? limit : prev + limit));
             })
-            .catch((err) => console.error('Ошибка при загрузке эдитов:', err));
+            .catch((err) => console.error('Ошибка при загрузке эдитов:', err))
+            .finally(() => {
+                if (initial) setLoading(false);
+            });
     }
 
     const filteredEdits = edits.filter((edit) => {
@@ -66,15 +72,22 @@ export default function AllEdits() {
                     searchTerm={searchTerm}
                     onSearchChange={setSearchTerm}
                 />
-                <Filters
-                    tags={tags}
-                    selectedTag={selectedTag}
-                    onSelectTag={setSelectedTag}
-                    totalEditsCount={filteredEdits.length}
-                />
-                <EditsList edits={filteredEdits} />
-                {edits.length < total && (
-                    <button className="load-more-btn" onClick={loadMoreEdits}>
+                {loading ? (
+                    <Loading />
+                ) : (
+                    <Filters
+                        tags={tags}
+                        selectedTag={selectedTag}
+                        onSelectTag={setSelectedTag}
+                        totalEditsCount={filteredEdits.length}
+                    />
+                )}
+                <EditsList edits={filteredEdits} loading={loading} />
+                {!loading && edits.length < total && (
+                    <button
+                        className="load-more-btn"
+                        onClick={() => loadMoreEdits()}
+                    >
                         Загрузить ещё
                     </button>
                 )}

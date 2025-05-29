@@ -5,6 +5,7 @@ import {
     removeFavorite,
     checkIsFavorite,
 } from '../../../api/favoritesApi';
+import Loading from '../../Loading/Loading';
 import './EditOfTheDay.sass';
 
 export default function EditOfTheDay() {
@@ -54,7 +55,7 @@ export default function EditOfTheDay() {
         }
     };
 
-    if (!edit) return <div className="edit-of-the-day">Загрузка...</div>;
+    if (!edit) return <Loading />;
 
     return (
         <div className="edit-of-the-day">

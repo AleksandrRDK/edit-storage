@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './EditCard.sass';
 
 export default function EditCard({ edit }) {
@@ -9,8 +10,8 @@ export default function EditCard({ edit }) {
     };
 
     return (
-        <a
-            href={`/edit/${edit._id}`}
+        <Link
+            to={`/edit/${edit._id}`}
             className="all-edit-card"
             title={edit.title}
         >
@@ -26,6 +27,6 @@ export default function EditCard({ edit }) {
                     </span>
                 </div>
             </div>
-        </a>
+        </Link>
     );
 }

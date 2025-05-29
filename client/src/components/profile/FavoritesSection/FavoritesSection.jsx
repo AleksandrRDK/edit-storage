@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
+import EditModal from '../../EditModal/EditModal';
+import { addFavorite, removeFavorite } from '../../../api/favoritesApi';
 import './FavoritesSection.sass';
 
-export default function FavoritesSection({ favorites }) {
+export default function FavoritesSection({ favorites, currentUser }) {
     const [sortBy, setSortBy] = useState('date');
-    const [selectedVideo, setSelectedVideo] = useState(null);
+    const [selectedEdit, setSelectedEdit] = useState(null);
 
     const topTags = useMemo(() => {
         const tagCounts = favorites
@@ -35,7 +37,6 @@ export default function FavoritesSection({ favorites }) {
         return arr;
     }, [favorites, sortBy]);
 
-    const getEmbedUrl = (videoId) => `https://www.youtube.com/embed/${videoId}`;
     const getThumbnailUrl = (videoId) =>
         `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
@@ -45,6 +46,34 @@ export default function FavoritesSection({ favorites }) {
             month: 'long',
             day: 'numeric',
         });
+    };
+
+    const handleToggleFavorite = async (editId, add) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token || !currentUser) return;
+
+            if (add) {
+                await addFavorite(editId, token);
+            } else {
+                await removeFavorite(editId, token);
+            }
+
+            setSelectedEdit((prev) =>
+                prev && prev._id === editId
+                    ? {
+                          ...prev,
+                          favorites: add
+                              ? [...(prev.favorites || []), currentUser.id]
+                              : (prev.favorites || []).filter(
+                                    (id) => id !== currentUser.id
+                                ),
+                      }
+                    : prev
+            );
+        } catch (err) {
+            console.error('Ошибка избранного:', err.message);
+        }
     };
 
     return (
@@ -80,7 +109,7 @@ export default function FavoritesSection({ favorites }) {
                     <div
                         key={edit._id}
                         className="edit-card"
-                        onClick={() => setSelectedVideo(edit.video)}
+                        onClick={() => setSelectedEdit(edit)}
                     >
                         <img
                             src={getThumbnailUrl(edit.video)}
@@ -95,31 +124,13 @@ export default function FavoritesSection({ favorites }) {
                 ))}
             </div>
 
-            {selectedVideo && (
-                <div
-                    className="modal-edit"
-                    onClick={() => setSelectedVideo(null)}
-                >
-                    <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            className="close-btn"
-                            onClick={() => setSelectedVideo(null)}
-                        >
-                            ✕
-                        </button>
-                        <iframe
-                            width="560"
-                            height="315"
-                            src={getEmbedUrl(selectedVideo)}
-                            title="YouTube video"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                    </div>
-                </div>
+            {selectedEdit && (
+                <EditModal
+                    edit={selectedEdit}
+                    currentUser={currentUser}
+                    onClose={() => setSelectedEdit(null)}
+                    onToggleFavorite={handleToggleFavorite}
+                />
             )}
         </div>
     );

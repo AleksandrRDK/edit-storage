@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import { fetchRandomEdits } from '../../../api/editsApi';
 import { addFavorite, removeFavorite } from '../../../api/favoritesApi';
 import EditModal from '../../../components/EditModal/EditModal';
+import Loading from '../../Loading/Loading';
 import './RandomEditsList.sass';
 
 export default function RandomEditsList({ currentUser }) {
     const [edits, setEdits] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [selectedEdit, setSelectedEdit] = useState(null);
 
     useEffect(() => {
         fetchRandomEdits()
             .then((data) => setEdits(data))
-            .catch((err) => console.error('Ошибка при загрузке эдитов:', err));
+            .catch((err) => console.error('Ошибка при загрузке эдитов:', err))
+            .finally(() => setLoading(false));
     }, []);
 
     const handleCloseModal = () => {
@@ -35,8 +38,8 @@ export default function RandomEditsList({ currentUser }) {
                         ? {
                               ...edit,
                               favorites: add
-                                  ? [...edit.favorites, currentUser.id]
-                                  : edit.favorites.filter(
+                                  ? [...(edit.favorites || []), currentUser.id]
+                                  : (edit.favorites || []).filter(
                                         (id) => id !== currentUser.id
                                     ),
                           }
@@ -49,8 +52,8 @@ export default function RandomEditsList({ currentUser }) {
                     ? {
                           ...prev,
                           favorites: add
-                              ? [...prev.favorites, currentUser.id]
-                              : prev.favorites.filter(
+                              ? [...(prev.favorites || []), currentUser.id]
+                              : (prev.favorites || []).filter(
                                     (id) => id !== currentUser.id
                                 ),
                       }
@@ -64,7 +67,9 @@ export default function RandomEditsList({ currentUser }) {
     return (
         <section className="random-edits-list">
             <h3>Рандомные эдиты</h3>
-            {edits.length === 0 ? (
+            {loading ? (
+                <Loading />
+            ) : edits.length === 0 ? (
                 <p className="no-edits">Эдитов пока нет</p>
             ) : (
                 <div className="cards-container">

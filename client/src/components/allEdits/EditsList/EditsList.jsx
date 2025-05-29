@@ -1,7 +1,11 @@
 import EditCard from '../EditCard/EditCard';
+import Loading from '../../Loading/Loading';
 import './EditsList.sass';
 
-export default function EditsList({ edits }) {
+export default function EditsList({ edits, loading }) {
+    if (loading) {
+        return <Loading />;
+    }
     return (
         <div className="all-edits-list">
             {edits.length === 0 ? (
