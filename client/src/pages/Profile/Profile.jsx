@@ -52,7 +52,7 @@ export default function Profile() {
             try {
                 const token = localStorage.getItem('token');
                 const res = await fetch(
-                    'http://localhost:5000/api/users/favorites',
+                    'https://edit-storage-server-production.up.railway.app/api/users/favorites',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

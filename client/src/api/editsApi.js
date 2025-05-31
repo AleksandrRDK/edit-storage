@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api/edits';
+// для разработки
+// const API_URL = 'http://localhost:5000/api/edits';
+const API_URL =
+    'https://edit-storage-server-production.up.railway.app/api/edits';
 
 export async function fetchEdits() {
     const res = await fetch(API_URL);
@@ -52,11 +55,14 @@ export async function addEdit({ title, videoUrl, tags }) {
     if (!videoId) throw new Error('Некорректная ссылка на YouTube');
 
     // Получаем текущего пользователя
-    const resUser = await fetch('http://localhost:5000/api/auth/me', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const resUser = await fetch(
+        'https://edit-storage-server-production.up.railway.app/api/auth/me',
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
     const userData = await resUser.json();
     if (!resUser.ok)
         throw new Error(userData.message || 'Ошибка получения пользователя');
