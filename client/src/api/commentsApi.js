@@ -1,0 +1,62 @@
+const BASE_URL = 'http://localhost:5000/api/comments';
+
+export async function getCommentsByEditId(editId) {
+    const res = await fetch(`${BASE_URL}/${editId}`);
+    if (!res.ok) throw new Error('Не удалось получить комментарии');
+    return res.json();
+}
+
+export async function addComment({ editId, text }) {
+    const token = localStorage.getItem('token');
+    console.log('addComment called with:', { editId, text });
+
+    const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ editId, text }),
+    });
+
+    console.log('Response status:', res.status);
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Error response body:', errorText);
+        throw new Error('Не удалось добавить комментарий');
+    }
+
+    const data = await res.json();
+    console.log('Response data:', data);
+
+    return data;
+}
+
+export async function updateComment({ commentId, text }) {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${BASE_URL}/${commentId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
+    });
+
+    if (!res.ok) throw new Error('Не удалось обновить комментарий');
+    return res.json();
+}
+
+export async function deleteComment({ commentId }) {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${BASE_URL}/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!res.ok) throw new Error('Не удалось удалить комментарий');
+    return res.json();
+}

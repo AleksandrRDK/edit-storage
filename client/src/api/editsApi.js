@@ -1,7 +1,7 @@
 // для разработки
-// const API_URL = 'http://localhost:5000/api/edits';
-const API_URL =
-    'https://edit-storage-server-production.up.railway.app/api/edits';
+const API_URL = 'http://localhost:5000/api/edits';
+// const API_URL =
+('https://edit-storage-server-production.up.railway.app/api/edits');
 
 export async function fetchEdits() {
     const res = await fetch(API_URL);
@@ -80,8 +80,8 @@ export async function addEdit({ title, videoUrl, tags, source, rating }) {
 
     // Получаем текущего пользователя
     const resUser = await fetch(
-        // 'http://localhost:5000/api/auth/me',
-        'https://edit-storage-server-production.up.railway.app/api/auth/me',
+        'http://localhost:5000/api/auth/me',
+        // 'https://edit-storage-server-production.up.railway.app/api/auth/me',
         {
             headers: {
                 Authorization: `Bearer ${token}`,
