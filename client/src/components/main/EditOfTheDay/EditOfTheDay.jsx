@@ -98,13 +98,10 @@ export default function EditOfTheDay({ currentUser }) {
                     )}
                     <div className="meta">
                         <span className="author">Автор: @{edit.author}</span>
-                        <span className="date">Добавлено: {edit.date}</span>
-                        <span className="comments">
-                            <CommentSection
-                                editId={edit._id}
-                                user={currentUser}
-                            />
+                        <span className="date">
+                            Добавлено: {edit.createdAt}
                         </span>
+                        <CommentSection editId={edit._id} user={currentUser} />
                     </div>
                     {error && <div className="error-message">{error}</div>}
                 </div>

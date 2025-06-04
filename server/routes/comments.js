@@ -18,9 +18,6 @@ router.get('/:editId', async (req, res) => {
 
 router.post('/', authMiddleware, async (req, res) => {
     try {
-        console.log('POST /comments body:', req.body);
-        console.log('Authenticated user:', req.user);
-
         const { editId, text } = req.body;
 
         if (!editId || !text) {
@@ -32,18 +29,16 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const newComment = new Comment({
             edit: editId,
-            author: req.user.userId,
+            author: req.user._id,
             text,
         });
 
         const saved = await newComment.save();
         const populated = await saved.populate('author', 'nickname');
 
-        console.log('Comment saved:', populated);
-
         res.status(201).json(populated);
     } catch (error) {
-        console.error('Error in POST /comments:', error); // Добавлено подробное логирование ошибки
+        console.error('Error in POST /comments:', error);
         res.status(500).json({
             error: error.message || 'Ошибка при добавлении комментария',
         });
@@ -58,7 +53,7 @@ router.put('/:commentId', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Комментарий не найден' });
         }
 
-        if (comment.author.toString() !== req.userId) {
+        if (comment.author.toString() !== req.user._id.toString()) {
             return res
                 .status(403)
                 .json({ message: 'Нет прав на редактирование' });
@@ -84,7 +79,7 @@ router.delete('/:commentId', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Комментарий не найден' });
         }
 
-        if (comment.author.toString() !== req.userId) {
+        if (comment.author.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'Нет прав на удаление' });
         }
 

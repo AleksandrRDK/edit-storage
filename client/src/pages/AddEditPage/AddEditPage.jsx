@@ -6,7 +6,7 @@ import { addEdit } from '../../api/editsApi';
 
 import Loading from '../../components/Loading/Loading';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import RatingSelector from './RatingSelector/RatingSelector';
+import RatingSelector from '../../components/RatingSelector/RatingSelector';
 
 import { useUser } from '../../context/UserContext';
 

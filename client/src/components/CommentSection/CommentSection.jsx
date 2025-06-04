@@ -125,12 +125,14 @@ export default function CommentSection({ editId, user }) {
                                         setEditText(e.target.value)
                                     }
                                 />
-                                <button onClick={handleUpdate}>
-                                    Сохранить
-                                </button>
-                                <button onClick={() => setEditingId(null)}>
-                                    Отмена
-                                </button>
+                                <div className="actions">
+                                    <button onClick={handleUpdate}>
+                                        Сохранить
+                                    </button>
+                                    <button onClick={() => setEditingId(null)}>
+                                        Отмена
+                                    </button>
+                                </div>
                             </>
                         ) : (
                             <>

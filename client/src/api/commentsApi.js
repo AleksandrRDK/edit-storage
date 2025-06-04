@@ -8,7 +8,6 @@ export async function getCommentsByEditId(editId) {
 
 export async function addComment({ editId, text }) {
     const token = localStorage.getItem('token');
-    console.log('addComment called with:', { editId, text });
 
     const res = await fetch(BASE_URL, {
         method: 'POST',
@@ -19,8 +18,6 @@ export async function addComment({ editId, text }) {
         body: JSON.stringify({ editId, text }),
     });
 
-    console.log('Response status:', res.status);
-
     if (!res.ok) {
         const errorText = await res.text();
         console.error('Error response body:', errorText);
@@ -28,7 +25,6 @@ export async function addComment({ editId, text }) {
     }
 
     const data = await res.json();
-    console.log('Response data:', data);
 
     return data;
 }
