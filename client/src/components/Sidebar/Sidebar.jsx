@@ -16,7 +16,7 @@ export default function Sidebar() {
                                 location.pathname === '/' ? 'active' : ''
                             }
                         >
-                            Главная
+                            Сегодня
                         </Link>
                     </li>
                     <li>

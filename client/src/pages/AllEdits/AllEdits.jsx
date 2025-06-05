@@ -16,7 +16,8 @@ export default function AllEdits() {
     const [skip, setSkip] = useState(0);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
-    const limit = 10;
+    const [selectedRating, setSelectedRating] = useState(null);
+    const limit = 8;
 
     useEffect(() => {
         loadMoreEdits(true);
@@ -61,7 +62,10 @@ export default function AllEdits() {
               edit.author?.toLowerCase().includes(lower) ||
               edit.tags?.some((t) => t.toLowerCase().includes(lower))
             : true;
-        return matchesTag && matchesSearch;
+        const matchesRating =
+            selectedRating !== null ? edit.rating === selectedRating : true;
+
+        return matchesTag && matchesSearch && matchesRating;
     });
 
     return (
@@ -79,6 +83,8 @@ export default function AllEdits() {
                         tags={tags}
                         selectedTag={selectedTag}
                         onSelectTag={setSelectedTag}
+                        selectedRating={selectedRating}
+                        onSelectRating={setSelectedRating}
                         totalEditsCount={filteredEdits.length}
                     />
                 )}

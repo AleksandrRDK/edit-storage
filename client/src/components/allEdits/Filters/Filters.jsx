@@ -5,6 +5,8 @@ export default function Filters({
     tags,
     selectedTag,
     onSelectTag,
+    selectedRating,
+    onSelectRating,
     totalEditsCount,
 }) {
     const [showModal, setShowModal] = useState(false);
@@ -43,6 +45,28 @@ export default function Filters({
                 >
                     🔍
                 </button>
+            </div>
+            <h4>Фильтры по оценке</h4>
+            <div className="ratings-list">
+                <button
+                    className={`rating-btn ${
+                        selectedRating === null ? 'active' : ''
+                    }`}
+                    onClick={() => onSelectRating(null)}
+                >
+                    Все
+                </button>
+                {[...Array(12).keys()].map((rating) => (
+                    <button
+                        key={rating}
+                        className={`rating-btn ${
+                            selectedRating === rating ? 'active' : ''
+                        }`}
+                        onClick={() => onSelectRating(rating)}
+                    >
+                        {rating}
+                    </button>
+                ))}
             </div>
 
             {showModal && (

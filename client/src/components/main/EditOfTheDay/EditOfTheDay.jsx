@@ -18,7 +18,7 @@ export default function EditOfTheDay({ currentUser }) {
     const [edit, setEdit] = useState(null);
     const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
     const token = localStorage.getItem('token');
 
@@ -68,6 +68,12 @@ export default function EditOfTheDay({ currentUser }) {
             <h2>Рандомный эдит дня</h2>
             <div className="content-row">
                 <div className="edit-info">
+                    <div className="meta">
+                        <span className="author">Автор: @{edit.author}</span>
+                        <span className="date">
+                            Добавлено: {edit.createdAt}
+                        </span>
+                    </div>
                     <div className="tags">
                         {edit.tags.map((tag, i) => (
                             <span key={i}>#{tag}</span>
@@ -96,14 +102,8 @@ export default function EditOfTheDay({ currentUser }) {
                             {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
                         </button>
                     )}
-                    <div className="meta">
-                        <span className="author">Автор: @{edit.author}</span>
-                        <span className="date">
-                            Добавлено: {edit.createdAt}
-                        </span>
-                        <CommentSection editId={edit._id} user={currentUser} />
-                    </div>
-                    {error && <div className="error-message">{error}</div>}
+                    {error && <div className="error">{error}</div>}
+                    <CommentSection editId={edit._id} user={currentUser} />
                 </div>
                 <div className="video-container">
                     {edit.source === 'youtube' ? (

@@ -5,7 +5,12 @@ import { getCloudinaryThumbnailUrl } from '../../../utils/cloudinaryUtils';
 import { getYouTubeThumbnailUrl } from '../../../utils/youtubeUtils';
 import './FavoritesSection.sass';
 
-export default function FavoritesSection({ favorites, currentUser }) {
+export default function FavoritesSection({
+    favorites,
+    currentUser,
+    onLoadMore,
+    hasMore,
+}) {
     const [sortBy, setSortBy] = useState('date');
     const [selectedEdit, setSelectedEdit] = useState(null);
 
@@ -133,6 +138,11 @@ export default function FavoritesSection({ favorites, currentUser }) {
                     </div>
                 ))}
             </div>
+            {hasMore && (
+                <button className="load-more-btn" onClick={onLoadMore}>
+                    Загрузить ещё
+                </button>
+            )}
 
             {selectedEdit && (
                 <EditModal
