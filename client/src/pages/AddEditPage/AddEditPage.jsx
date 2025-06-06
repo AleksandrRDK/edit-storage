@@ -135,6 +135,7 @@ export default function AddEditPage() {
             <main className="add-edit-page-wrapper">
                 <Sidebar />
                 <div className="add-edit-form-shield">
+                    <div className="void__field"></div>
                     <div className="add-edit-form">
                         <p>
                             Пожалуйста, войдите в систему, чтобы добавить эдит.
@@ -199,6 +200,11 @@ export default function AddEditPage() {
                                 required
                             />
                         )}
+
+                        <div className="tag-hint">
+                            ❗ Пишите теги с умом, например:{' '}
+                            <b>аниме, наруто, экшен</b>
+                        </div>
 
                         <input
                             type="text"

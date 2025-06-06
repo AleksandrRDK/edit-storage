@@ -112,6 +112,7 @@ export default function ModifyEdit() {
         <main className="add-edit-page-wrapper">
             <Sidebar />
             <div className="add-edit-form-shield">
+                <div className="void__field"></div>
                 <div className="add-edit-form modify-edit">
                     <button
                         className="delete-icon"
