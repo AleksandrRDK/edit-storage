@@ -7,6 +7,8 @@ import authRoutes from './routes/auth.js';
 import favoritesRoutes from './routes/favoritesRoutes.js';
 import getEditOfTheDay from './routes/editOfTheDay.js';
 import commentRoutes from './routes/comments.js';
+import searchEditsRouter from './routes/searchEdits.js';
+import tagsRouter from './routes/tags.js';
 
 dotenv.config();
 
@@ -40,8 +42,10 @@ app.get('/', (req, res) => {
     res.send('Сервер работает!');
 });
 
+app.use('/api/edits/search', searchEditsRouter);
 app.use('/api/edits', editRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users/favorites', favoritesRoutes);
 app.use('/api/edit-of-the-day', getEditOfTheDay);
 app.use('/api/comments', commentRoutes);
+app.use('/api/tags', tagsRouter);

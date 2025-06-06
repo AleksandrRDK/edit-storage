@@ -64,9 +64,9 @@ export default function AddEditPage() {
         }
 
         if (source === 'youtube') {
-            const youtubeRegex =
-                /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//;
-            if (!videoUrl || !youtubeRegex.test(videoUrl)) {
+            const isYoutubeLink =
+                /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(videoUrl);
+            if (!videoUrl || !isYoutubeLink) {
                 setMessage({
                     type: 'error',
                     text: 'Введите корректную ссылку на YouTube',

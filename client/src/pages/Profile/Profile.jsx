@@ -17,6 +17,7 @@ export default function Profile() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [favoritesLoading, setFavoritesLoading] = useState(false);
+    const [total, setTotal] = useState(null);
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
@@ -37,7 +38,8 @@ export default function Profile() {
                 const token = localStorage.getItem('token');
                 const data = await getFavorites(token, 1);
                 setFavorites(data.edits);
-                setHasMore(data.hasMore); // 👈 вот это добавь
+                setHasMore(data.hasMore);
+                setTotal(data.total);
                 setPage(1);
             } catch (err) {
                 console.error(err.message);
@@ -119,6 +121,7 @@ export default function Profile() {
 
                         <hr className="section-divider" />
                         <FavoritesSection
+                            total={total}
                             favorites={favorites}
                             currentUser={user}
                             onLoadMore={() => {

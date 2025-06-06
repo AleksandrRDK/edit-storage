@@ -8,9 +8,9 @@ export default function Filters({
     selectedRating,
     onSelectRating,
     totalEditsCount,
+    topTags = [],
 }) {
     const [showModal, setShowModal] = useState(false);
-    const visibleTags = tags.slice(0, 10);
 
     return (
         <div className="filters">
@@ -26,7 +26,8 @@ export default function Filters({
                     Все ({totalEditsCount})
                 </button>
 
-                {visibleTags.map(({ tag, count }) => (
+                {/* Три популярных тега рядом */}
+                {topTags.map(({ tag, count }) => (
                     <button
                         key={tag}
                         className={`tag-btn ${

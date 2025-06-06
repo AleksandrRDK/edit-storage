@@ -60,22 +60,34 @@ router.get('/paginated', async (req, res) => {
 router.post(
     '/',
     authMiddleware,
-    upload.single('videoFile'),
+    upload.single('videoFile'), // multer для загрузки файла
     async (req, res) => {
         try {
-            const { title, source, rating } = req.body;
+            const { title, source, rating, video } = req.body;
 
+            // Парсим теги
             let tags = [];
-            try {
-                tags = req.body.tags ? JSON.parse(req.body.tags) : [];
-            } catch (parseErr) {
-                console.error('Ошибка парсинга tags:', parseErr);
-                return res
-                    .status(400)
-                    .json({ message: 'Некорректный формат тегов' });
+            if (req.body.tags) {
+                if (typeof req.body.tags === 'string') {
+                    try {
+                        tags = JSON.parse(req.body.tags);
+                    } catch (parseErr) {
+                        console.error('Ошибка парсинга tags:', parseErr);
+                        return res
+                            .status(400)
+                            .json({ message: 'Некорректный формат тегов' });
+                    }
+                } else if (Array.isArray(req.body.tags)) {
+                    tags = req.body.tags;
+                } else {
+                    return res
+                        .status(400)
+                        .json({ message: 'Некорректный тип тегов' });
+                }
             }
 
-            if (!title || !req.file || !source || rating === undefined) {
+            // Проверяем обязательные поля
+            if (!title || !source || rating === undefined) {
                 console.warn('Отсутствуют обязательные поля');
                 return res
                     .status(400)
@@ -97,6 +109,7 @@ router.post(
                     .json({ message: 'Рейтинг должен быть от 0 до 11' });
             }
 
+            // Функция для загрузки видео на Cloudinary из буфера
             const uploadFromBuffer = (fileBuffer) => {
                 return new Promise((resolve, reject) => {
                     const stream = cloudinary.uploader.upload_stream(
@@ -116,11 +129,28 @@ router.post(
                 });
             };
 
-            const result = await uploadFromBuffer(req.file.buffer);
+            let videoPath = '';
+
+            if (source === 'cloudinary') {
+                if (!req.file) {
+                    return res
+                        .status(400)
+                        .json({ message: 'Файл не загружен' });
+                }
+                const result = await uploadFromBuffer(req.file.buffer);
+                videoPath = `v${result.version}/${result.public_id}`;
+            } else if (source === 'youtube') {
+                if (!video) {
+                    return res
+                        .status(400)
+                        .json({ message: 'Не указан YouTube ID видео' });
+                }
+                videoPath = video;
+            }
 
             const newEdit = new Edit({
                 title,
-                video: `${result.version}/${result.public_id}`,
+                video: videoPath,
                 source,
                 tags,
                 rating: parsedRating,

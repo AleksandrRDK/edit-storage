@@ -49,12 +49,30 @@ export async function addEdit({
         function extractYouTubeId(url) {
             try {
                 const urlObj = new URL(url);
+
+                // youtu.be/VIDEO_ID
                 if (urlObj.hostname.includes('youtu.be')) {
                     return urlObj.pathname.slice(1);
                 }
+
+                // youtube.com/watch?v=VIDEO_ID
                 if (urlObj.hostname.includes('youtube.com')) {
-                    return urlObj.searchParams.get('v');
+                    const v = urlObj.searchParams.get('v');
+                    if (v) return v;
+
+                    // youtube.com/shorts/VIDEO_ID
+                    const match = urlObj.pathname.match(
+                        /\/shorts\/([a-zA-Z0-9_-]{11})/
+                    );
+                    if (match) return match[1];
+
+                    // youtube.com/embed/VIDEO_ID
+                    const embed = urlObj.pathname.match(
+                        /\/embed\/([a-zA-Z0-9_-]{11})/
+                    );
+                    if (embed) return embed[1];
                 }
+
                 return null;
             } catch (err) {
                 console.error(err);

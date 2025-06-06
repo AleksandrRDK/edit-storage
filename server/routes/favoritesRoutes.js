@@ -66,7 +66,6 @@ router.get('/', authMiddleware, async (req, res) => {
 
         const totalFavorites = user.favorites.length;
 
-        // Берём нужные айди с пагинацией
         const pagedFavoritesIds = user.favorites
             .slice(skip, skip + limit)
             .filter((id) => mongoose.Types.ObjectId.isValid(id));
