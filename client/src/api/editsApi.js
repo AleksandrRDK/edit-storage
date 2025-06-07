@@ -1,7 +1,7 @@
 // для разработки
-const API_URL = 'http://localhost:5000/api/edits';
-// const API_URL =
-//     'https://edit-storage-server-production.up.railway.app/api/edits';
+// const API_URL = 'http://localhost:5000/api/edits';
+const API_URL =
+    'https://edit-storage-server-production.up.railway.app/api/edits';
 
 export async function fetchEdits() {
     const res = await fetch(API_URL);

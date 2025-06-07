@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMyEdits } from '../../../api/editsApi';
 import Loading from '../../../components/Loading/Loading';
+import { Link } from 'react-router-dom';
 import { useUser } from '../../../context/UserContext';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import './MyEdits.sass';
@@ -76,13 +77,21 @@ const MyEdits = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() =>
-                                            handleEditClick(edit._id)
-                                        }
-                                    >
-                                        Изменить
-                                    </button>
+                                    <div className="button__wrapper">
+                                        <Link
+                                            to={`/edit/${edit._id}`}
+                                            className="details-btn"
+                                        >
+                                            Перейти на страницу эдита
+                                        </Link>
+                                        <button
+                                            onClick={() =>
+                                                handleEditClick(edit._id)
+                                            }
+                                        >
+                                            Изменить
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>

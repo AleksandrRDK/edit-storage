@@ -11,6 +11,7 @@ import {
 } from '../../../utils/cloudinaryUtils';
 import { getYouTubeEmbedUrl } from '../../../utils/youtubeUtils';
 import Loading from '../../Loading/Loading';
+import { Link } from 'react-router-dom';
 import CommentSection from '../../CommentSection/CommentSection';
 import './EditOfTheDay.sass';
 
@@ -102,6 +103,9 @@ export default function EditOfTheDay({ currentUser }) {
                             })}
                         </span>
                     </div>
+                    <Link to={`/edit/${edit._id}`} className="details-btn">
+                        Перейти на страницу эдита
+                    </Link>
                     <div className="tags">
                         {edit.tags.map((tag, i) => (
                             <span key={i}>#{tag}</span>

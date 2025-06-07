@@ -1,7 +1,7 @@
 // для разработки
-const API_BASE = 'http://localhost:5000/api/edits/search';
-// const API_BASE =
-//     'https://edit-storage-server-production.up.railway.app/api/edits/search';
+// const API_BASE = 'http://localhost:5000/api/edits/search';
+const API_BASE =
+    'https://edit-storage-server-production.up.railway.app/api/edits/search';
 
 export async function fetchFilteredEdits({
     search = '',

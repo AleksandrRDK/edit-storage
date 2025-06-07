@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { registerUser, loginUser } from '../../../api/authApi';
+import Loading from '../../Loading/Loading';
 import './LoginForm.sass';
 
 export default function LoginForm({ onLogin }) {
@@ -10,6 +11,7 @@ export default function LoginForm({ onLogin }) {
     const [role, setRole] = useState('user');
     const [adminSecret, setAdminSecret] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -43,6 +45,7 @@ export default function LoginForm({ onLogin }) {
 
         try {
             if (mode === 'register') {
+                setLoading(true);
                 await registerUser({
                     email,
                     password,
@@ -51,13 +54,19 @@ export default function LoginForm({ onLogin }) {
                     adminSecret,
                 });
             }
-
+            setLoading(true);
             const { token, user } = await loginUser({ email, password });
             localStorage.setItem('token', token);
             onLogin(user);
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
+    }
+
+    if (loading) {
+        return <Loading />;
     }
 
     return (

@@ -1,7 +1,7 @@
 // для разработки
-const API_BASE = 'http://localhost:5000/api/users/favorites';
-// const API_BASE =
-//     'https://edit-storage-server-production.up.railway.app/api/users/favorites';
+// const API_BASE = 'http://localhost:5000/api/users/favorites';
+const API_BASE =
+    'https://edit-storage-server-production.up.railway.app/api/users/favorites';
 
 export async function addFavorite(editId, token) {
     const res = await fetch(`${API_BASE}/${editId}`, {
