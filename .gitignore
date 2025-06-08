@@ -11,6 +11,7 @@ yarn-error.log*
 
 # dotenv files (для безопасности)
 credentials.txt
+server/credentials.txt
 **/.env
 **/.env.*.local
 **/.env.local
